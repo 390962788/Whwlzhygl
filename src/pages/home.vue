@@ -11,6 +11,9 @@
     <el-card class="sec">
       <div slot="header" class="clearfix">
         <span>通知公告</span>
+        <router-link to="/notice">
+          <el-button style="float: right; padding: 3px 0" type="text">更多</el-button>
+        </router-link>
       </div>
       <el-table
         :show-header="false"
@@ -30,7 +33,9 @@
       <el-card class="sec half-row">
         <div slot="header" class="clearfix">
           <span>证件到期</span>
-          <el-button style="float: right; padding: 3px 0" type="text">更多</el-button>
+          <router-link to="/person">
+            <el-button style="float: right; padding: 3px 0" type="text">更多</el-button>
+          </router-link>
         </div>
         <el-table
           :show-header="false"
@@ -52,7 +57,9 @@
       <el-card class="sec half-row">
         <div slot="header" class="clearfix">
           <span>电子路单</span>
-          <el-button style="float: right; padding: 3px 0" type="text">更多</el-button>
+          <router-link to="/order">
+            <el-button style="float: right; padding: 3px 0" type="text">更多</el-button>
+          </router-link>
         </div>
         <el-table
           :show-header="false"
@@ -70,7 +77,9 @@
     <el-card class="sec half-row">
       <div slot="header" class="clearfix">
         <span>违章信息</span>
-        <el-button style="float: right; padding: 3px 0" type="text">更多</el-button>
+        <router-link to="/illegal">
+          <el-button style="float: right; padding: 3px 0" type="text">更多</el-button>
+        </router-link>
       </div>
       <el-table
         :show-header="false"
