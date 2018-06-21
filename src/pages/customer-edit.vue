@@ -84,8 +84,8 @@ export default {
       },
       rules: {},
       apiName: 'customer/',
-      addApi: 'addCustomer',
-      updateApi: 'updateCustomer'
+      addApi: 'add',
+      updateApi: 'update'
     }
   },
   mounted() {
@@ -94,10 +94,7 @@ export default {
   methods: {
     async getDetail() {
       let {data} = await this.$http({
-        url: 'customer/getCustomer',
-        params: {
-          customerId: this.id
-        }
+        url: 'customer/get/' + this.id
       })
       if (data.code == 0) {
         this.formData = data.data

@@ -21,20 +21,20 @@
       <el-table-column
         :formatter="timeformat"
         prop="maintenanceStartDate"
-        label="维护计划时间">
+        label="计划维护时间">
       </el-table-column>
       <el-table-column
         :formatter="timeformat"
         prop="actualStartDate"
-        label="维护实际时间">
+        label="实际维护时间">
       </el-table-column>
       <el-table-column
         fixed="right"
         label="操作"
         width="100">
         <template slot-scope="scope">
-          <el-button @click="editClick(scope.row.maintenancePlanId)" type="text" size="small">编辑</el-button>
-          <el-button @click="delectClick([scope.row.maintenancePlanId])" type="text" size="small">删除</el-button>
+          <el-button @click="editClick(scope.row.id)" type="text" size="small">编辑</el-button>
+          <el-button @click="delectClick([scope.row.id])" type="text" size="small">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -59,11 +59,11 @@ export default {
   data() {
     return {
       keyword: '',
-      idField: 'maintenancePlanId',
+      idField: 'id',
       editRoute: 'MaintenanceEdit',
       apiName: 'maintenancePlan',
-      deleteApi: '/deleteMaintenancePlan',
-      getListApi: '/getMaintenancePlanList'
+      deleteApi: '/delete',
+      getListApi: '/getList'
     }
   },
   props: {

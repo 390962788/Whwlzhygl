@@ -56,8 +56,8 @@ export default {
       idField: 'id',
       editRoute: 'IllegalEdit',
       apiName: 'regulationRecord',
-      deleteApi: '/deleteRegulationRecord',
-      getListApi: '/getRegulationRecordList'
+      deleteApi: '/delete',
+      getListApi: '/getList'
     }
   },
   mounted() {

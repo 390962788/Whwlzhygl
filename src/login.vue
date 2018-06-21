@@ -2,14 +2,13 @@
   <div>
     <el-dialog title="登录管理后台系统" :visible="true" width="400px" :show-close="false" center>
       <el-form :model="formData" :rules="rules" ref="ruleForm" label-width="100px" size="medium">
-        <el-form-item label="用户名" prop="userName">
-          <el-input v-model="formData.userName"></el-input>
+        <el-form-item label="用户名" prop="mobile">
+          <el-input v-model="formData.mobile"></el-input>
         </el-form-item>
         <el-form-item label="密码" prop="password">
           <el-input type="password" v-model="formData.password"></el-input>
         </el-form-item>
-        <el-button type="success" @click="submitForm('ruleForm', 1)" :loading="posting">登录腾业</el-button>
-        <el-button type="success" @click="submitForm('ruleForm', 2)" :loading="posting">登录立鑫</el-button>
+        <el-button type="success" @click="submitForm('ruleForm')" :loading="posting">登录</el-button>
       </el-form>
     </el-dialog>
   </div>
@@ -19,13 +18,12 @@ export default {
   data() {
     return {
       posting: false,
-      companyId: 0,
       formData: {
-        userName: '',
+        mobile: '',
         password: ''
       },
       rules: {
-        userName: {required: true, message: '请输入用户名'},
+        mobile: {required: true, message: '请输入用户名'},
         password: {required: true, message: '请输入密码'}
       }
     }
@@ -39,11 +37,16 @@ export default {
         data: this.formData
       })
       if (data.code == 0) {
-        sessionStorage.setItem('loginkey', data.data.token)
-        sessionStorage.setItem('userId', data.data.userId)
+        // sessionStorage.removeItem('token')
+        // sessionStorage.removeItem('companyId')
+        // sessionStorage.removeItem('mobile')
+        // sessionStorage.removeItem('personTypeId')
+        this.$http.defaults.headers.common['Authorization'] = 'whwlzhygl ' + data.data.token
+        sessionStorage.setItem('token', data.data.token)
+        // sessionStorage.setItem('userId', data.data.userId)
         sessionStorage.setItem('personTypeId', data.data.personTypeId)
-        sessionStorage.setItem('companyId', this.companyId)
-        sessionStorage.setItem('userName', this.formData.userName)
+        sessionStorage.setItem('companyId', data.data.companyId)
+        sessionStorage.setItem('mobile', this.formData.mobile)
         this.$router.push({
           name: 'Home'
         })
@@ -52,8 +55,7 @@ export default {
       }
       this.posting = false
     },
-    submitForm(formName, companyId) {
-      this.companyId = companyId
+    submitForm(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
           this.postForm()

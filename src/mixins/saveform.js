@@ -10,7 +10,7 @@ export default {
     },
     async postForm() {
       this.posting = true
-      this.formData.userId = sessionStorage.getItem('userId')
+      // this.formData.userId = sessionStorage.getItem('userId')
       let {data} = await this.$http({
         method: 'post',
         url: this.apiName + (this.id ? this.updateApi : this.addApi),
@@ -22,7 +22,7 @@ export default {
           type: 'success'
         })
         this.$emit('save-ok')
-        this.id || this.$router.back()
+        this.$router.back()
       } else {
         this.$message.error(data.msg)
       }

@@ -55,8 +55,8 @@ export default {
       idField: 'id',
       editRoute: 'DoorcheckEdit',
       apiName: 'carCheckRecord',
-      deleteApi: '/deleteCarCheckRecord',
-      getListApi: '/getCarCheckRecordList'
+      deleteApi: '/delete',
+      getListApi: '/getList'
     }
   },
   mounted() {

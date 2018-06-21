@@ -28,7 +28,7 @@ export default {
       dynamicTags: [],
       inputVisible: false,
       inputValue: '',
-      ApiName: this.apiName.substring(0,1).toUpperCase() + this.apiName.substring(1)
+      ApiName: ''
     }
   },
   props: {
@@ -40,7 +40,7 @@ export default {
   methods: {
     async getList() {
       let {data} = await this.$http({
-        url: this.apiName + 'CheckContent/get' + this.ApiName + 'CheckContentList'
+        url: this.apiName +'/getList'
       })
       if (data.code == 0) {
         this.dynamicTags = data.data
@@ -49,10 +49,8 @@ export default {
     async handleClose(tag) {
       let {data} = await this.$http({
         method: 'post',
-        url: this.apiName + 'CheckContent/delete' + this.ApiName + 'CheckContent',
-        data: {
-          ids: [tag.id]
-        }
+        url: this.apiName + '/delete',
+        data: [tag.id]
       })
       if (data.code == 0) {
         this.getList()
@@ -72,10 +70,10 @@ export default {
       if (inputValue) {
         let {data} = await this.$http({
           method: 'post',
-          url: this.apiName + 'CheckContent/add' + this.ApiName + 'CheckContent',
+          url: this.apiName + '/add',
           data: {
-            content: inputValue,
-            checkUnitId: 1
+            companyId:sessionStorage.getItem('companyId'),
+            constantsValue: inputValue
           }
         })
         if (data.code == 0) {

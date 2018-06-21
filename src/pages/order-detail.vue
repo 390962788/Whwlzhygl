@@ -70,8 +70,8 @@ export default {
       idField: 'id',
       editRoute: 'OrderDetailEdit',
       apiName: 'orderDetail',
-      deleteApi: '/deleteorderDetail',
-      getListApi: '/getOrderDetailList',
+      deleteApi: '/delete',
+      getListApi: '/getList',
       params: {orderId: this.id},
       isShowForm: false,
       sid: ''

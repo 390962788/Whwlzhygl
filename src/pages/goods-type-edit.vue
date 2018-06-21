@@ -19,12 +19,12 @@ export default {
     return {
       id: parseInt(this.$route.query.id),
       formData: {
-        scopeName: '',
+        companyId:sessionStorage.getItem('companyId')
       },
       rules: {},
       apiName: 'bizScope/',
-      addApi: 'addBizScope',
-      updateApi: 'updateBizScope'
+      addApi: 'add',
+      updateApi: 'update'
     }
   },
   mounted() {
@@ -33,10 +33,7 @@ export default {
   methods: {
     async getDetail() {
       let {data} = await this.$http({
-        url: 'bizScope/getBizScope',
-        params: {
-          bizScopeId: this.id
-        }
+        url: 'bizScope/get/' + this.id
       })
       if (data.code == 0) {
         this.formData = data.data

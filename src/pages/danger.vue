@@ -56,8 +56,8 @@ export default {
       idField: 'id',
       editRoute: 'DangerEdit',
       apiName: 'hiddenDangerCheckRecord',
-      deleteApi: '/deleteHiddenDangerCheckRecord',
-      getListApi: '/getHiddenDangerCheckRecordList'
+      deleteApi: '/delete',
+      getListApi: '/getList'
     }
   },
   mounted() {

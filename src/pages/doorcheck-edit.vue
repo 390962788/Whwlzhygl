@@ -18,23 +18,23 @@
         <el-select v-model="formData.carId" filterable placeholder="输入车牌号筛选">
           <el-option
             v-for="item in carList"
-            :key="item.carId"
+            :key="item.id"
             :label="item.carPlateNum"
-            :value="item.carId">
+            :value="item.id">
           </el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="检查人" prop="personIds">
+      <el-form-item label="检查人" prop="userIds">
         <el-select
-          v-model="formData.personIds"
+          v-model="formData.userIds"
           multiple
           filterable
           placeholder="请选择人员">
           <el-option
-            v-for="item in personList"
-            :key="item.personId"
-            :label="item.personName"
-            :value="item.personId">
+            v-for="item in userList"
+            :key="item.id"
+            :label="item.userName"
+            :value="item.id">
           </el-option>
         </el-select>
       </el-form-item>
@@ -46,6 +46,9 @@
       </el-form-item>
       <el-form-item label="存在的问题" prop="existQuestion">
         <el-input v-model="formData.existQuestion"></el-input>
+      </el-form-item>
+       <el-form-item label="检查日期" prop="checkDate">
+        <el-date-picker v-model="formData.checkDate" type="date" value-format="yyyy-MM-dd"></el-date-picker>
       </el-form-item>
       <el-form-item>
         <el-button type="warning" v-if="target" @click="reform">整改</el-button>
@@ -69,61 +72,61 @@ export default {
       id: parseInt(this.$route.query.id),
       caritemList: [],
       formData: {
-        companyId: sessionStorage.getItem('companyId'),
+        companyId: sessionStorage.getItem('companyId')
       },
-      personList: [],
+      userList: [],
       carList: [],
       rules: {},
       imageUrl: '',
       apiName: 'carCheckRecord/',
-      addApi: 'addCarCheckRecord',
-      updateApi: 'updateCarCheckRecord'
+      addApi: 'add',
+      updateApi: 'update'
     }
   },
   mounted() {
     this.id ? this.getDetail() : this.getDangerItemList()
-    this.getPersonList()
+    this.getuserList()
     this.getCarList()
   },
   methods: {
     async getCarList() {
       let {data} = await this.$http({
-        url: '/car/getCarListAll'
+        url: '/car/getList',
+        params:{
+          companyId:sessionStorage.getItem('companyId')
+        }
       })
       if (data.code == 0) {
         this.carList = data.data
       }
     },
     beforePost() {
-      this.formData.contents = this.caritemList
+      this.formData.details = this.caritemList
     },
-    async getPersonList() {
-      let {data} = await this.$http('person/getPersonListAll')
+    async getuserList() {
+      let {data} = await this.$http({url:'user/getList',params:{companyId:sessionStorage.getItem('companyId')}})
       if (data.code == 0) {
-        this.personList = data.data
+        this.userList = data.data
       }
     },
     async getDangerItemList() {
       let {data} = await this.$http({
-        url: 'carCheckContent/getCarCheckContentList'
+        url: 'carCheckDetail/getList'
       })
       if (data.code == 0) {
         this.caritemList = data.data
-        for (let i;i < this.caritemList.length; i++){
-          this.caritemList[i].result = null
-        }
+        // for (let i;i < this.caritemList.length; i++){
+        //   this.caritemList[i].result = null
+        // }
       }
     },
     async getDetail() {
       let {data} = await this.$http({
-        url: 'carCheckRecord/getCarCheckRecord',
-        params: {
-          carCheckRecordId: this.id
-        }
+        url: 'carCheckRecord/get/' + this.id
       })
       if (data.code == 0) {
         this.formData = data.data
-        this.caritemList = this.formData.contents
+        this.caritemList = this.formData.details
       }
     }
   }

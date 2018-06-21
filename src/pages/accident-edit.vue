@@ -3,14 +3,14 @@
     <el-form :model="formData" :rules="rules" ref="ruleForm" label-width="100px" size="medium">
       <el-form-item label="电子路单" prop="orderId">
         <el-select v-model="formData.orderId" placeholder="请选择">
-          <el-option v-for="item in orderIdList" :key="item.orderId" :label="item.goodsName" :value="item.orderId"></el-option>
+          <el-option v-for="item in orderIdList" :key="item.id" :label="item.orderNum" :value="item.id"></el-option>
         </el-select>
-        <el-select v-model="plateNum" @change="getOrderList" filterable placeholder="选择车牌号筛选">
+        <el-select v-model="carId" @change="getOrderList" filterable placeholder="选择车牌号筛选">
           <el-option
             v-for="item in carList"
-            :key="item.carId"
+            :key="item.id"
             :label="item.carPlateNum"
-            :value="item.carId">
+            :value="item.id">
           </el-option>
         </el-select>
         <el-date-picker v-model="loadingTime" type="date" @change="getOrderList" value-format="yyyy-MM-dd HH:mm" placeholder="选择时间筛选"></el-date-picker>
@@ -121,11 +121,11 @@ export default {
       },
       rules: {},
       carList: [],
-      plateNum: '',
-      loadingTime: '',
+      carId: '',
+      loadingTime: null,
       apiName: 'accident/',
-      addApi: 'addAccident',
-      updateApi: 'updateAccident'
+      addApi: 'add',
+      updateApi: 'update'
     }
   },
   mounted() {
@@ -137,7 +137,10 @@ export default {
   methods: {
     async getCarList() {
       let {data} = await this.$http({
-        url: '/car/getCarListAll'
+        url: '/car/getList',
+        params:{
+          companyId:sessionStorage.getItem('companyId')
+        }
       })
       if (data.code == 0) {
         this.carList = data.data
@@ -145,7 +148,10 @@ export default {
     },
     async getDutyList() {
       let {data} = await this.$http({
-        url: 'accidentDuty/getAccidentDutyList'
+        url: 'accidentDuty/getList',
+        params:{
+          companyId:sessionStorage.getItem('companyId')
+        }
       })
       if (data.code == 0) {
         this.dutyList = data.data
@@ -153,12 +159,12 @@ export default {
     },
     async getOrderList() {
       let {data} = await this.$http({
-        url: 'order/getOrderList',
+        url: 'order/getList',
         params: {
           companyId: sessionStorage.getItem('companyId'),
           currentPage: 1,
           size: 50,
-          plateNum: this.plateNum,
+          carId: this.carId,
           loadingTime: this.loadingTime
         }
       })
@@ -168,10 +174,7 @@ export default {
     },
     async getDetail() {
       let {data} = await this.$http({
-        url: 'accident/getAccident',
-        params: {
-          accidentId: this.id
-        }
+        url: 'accident/get/' + this.id,
       })
       if (data.code == 0) {
         this.formData = data.data

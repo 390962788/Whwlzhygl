@@ -11,9 +11,9 @@
           <el-select v-model="formData.customerId" filterable @change="cusChange">
             <el-option
               v-for="item in customerList"
-              :key="item.customerId"
+              :key="item.id"
               :label="item.customerName"
-              :value="item.customerId"
+              :value="item.id"
             ></el-option>
           </el-select>
         </el-form-item>
@@ -53,9 +53,9 @@
           <el-select v-model="formData.carId" @change="carChange" filterable placeholder="输入车牌号筛选">
             <el-option
               v-for="item in carList"
-              :key="item.carId"
+              :key="item.id"
               :label="item.carPlateNum"
-              :value="item.carId">
+              :value="item.id">
             </el-option>
           </el-select>
         </el-form-item>
@@ -63,9 +63,9 @@
           <el-select v-model="formData.trailerId" filterable placeholder="输入车牌号筛选">
             <el-option
               v-for="item in carList"
-              :key="item.carId"
+              :key="item.id"
               :label="item.carPlateNum"
-              :value="item.carId">
+              :value="item.id">
             </el-option>
           </el-select>
         </el-form-item>
@@ -75,9 +75,9 @@
           <el-select v-model="formData.goodsId" filterable placeholder="输入货物筛选">
             <el-option
               v-for="item in goodsList"
-              :key="item.goodsId"
+              :key="item.id"
               :label="item.goodsName"
-              :value="item.goodsId">
+              :value="item.id">
             </el-option>
           </el-select>
         </el-form-item>
@@ -141,8 +141,8 @@ export default {
     return {
       id: parseInt(this.$route.query.id),
       apiName: 'order/',
-      addApi: 'addOrder',
-      updateApi: 'updateOrder',
+      addApi: 'add',
+      updateApi: 'update',
       formData: {
         companyId: sessionStorage.getItem('companyId'),
         carId: '',
@@ -154,7 +154,10 @@ export default {
         driverQuaLicNum: '',
         escortIdCardNum: '',
         escortMobile: '',
-        escortQuaLicNum: ''
+        escortQuaLicNum: '',
+        loadingTime:new Date(),
+        transportDate:new Date(),
+        unloadingTime:new Date()
       },
       cusData: {
         linkmanName: '',
@@ -182,10 +185,7 @@ export default {
     async carChange() {
       console.log(this.formData.carId)
       let {data} = await this.$http({
-        url: 'car/getCar',
-        params: {
-          carId: this.formData.carId
-        }
+        url: 'car/get/' + this.formData.carId
       })
       if (data.code == 0) {
         this.formData.trailerId = data.data.trailerId
@@ -196,7 +196,7 @@ export default {
     async cusSave() {
       let {data} = await this.$http({
         method: 'post',
-        url: 'customer/updateCustomer',
+        url: 'customer/update',
         data: this.cusData
       })
       if (data.code != 0) {
@@ -208,7 +208,7 @@ export default {
     },
     async getGoodsList() {
       let {data} = await this.$http({
-        url: '/goods/getGoodsListAllContent'
+        url: '/goods/getList'
       })
       if (data.code == 0) {
         this.goodsList = data.data
@@ -216,7 +216,7 @@ export default {
     },
     async getCarList() {
       let {data} = await this.$http({
-        url: '/car/getCarListAll'
+        url: '/car/getList'
       })
       if (data.code == 0) {
         this.carList = data.data
@@ -235,7 +235,7 @@ export default {
     },
     async getCustomerList() {
       let {data} = await this.$http({
-        url: 'customer/getCustomerListAllContent',
+        url: 'customer/getList',
         params: {
           companyId: sessionStorage.getItem('companyId')
         }
@@ -246,10 +246,7 @@ export default {
     },
     async cusChange() {
       let {data} = await this.$http({
-        url: 'customer/getCustomer',
-        params: {
-          customerId: this.formData.customerId
-        }
+        url: 'customer/get/' + this.formData.customerId
       })
       if (data.code == 0) {
         this.cusData = data.data
@@ -257,10 +254,7 @@ export default {
     },
     async getDetail() {
       let {data} = await this.$http({
-        url: 'order/getOrder',
-        params: {
-          orderId: this.id
-        }
+        url: 'order/get/' + this.id
       })
       if (data.code == 0) {
         this.formData = data.data

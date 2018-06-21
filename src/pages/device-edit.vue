@@ -33,8 +33,8 @@ export default {
       },
       rules: {},
       apiName: 'deviceMaintenance/',
-      addApi: 'addDeviceMaintenance',
-      updateApi: 'updateDeviceMaintenance'
+      addApi: 'add',
+      updateApi: 'update'
     }
   },
   mounted() {
@@ -43,10 +43,7 @@ export default {
   methods: {
     async getDetail() {
       let {data} = await this.$http({
-        url: 'deviceMaintenance/getDeviceMaintenance',
-        params: {
-          deviceMaintenanceId: this.id
-        }
+        url: 'deviceMaintenance/get/' + this.id
       })
       if (data.code == 0) {
         this.formData = data.data

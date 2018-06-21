@@ -30,10 +30,10 @@
       <el-form-item label="签到" prop="signInIds">
         <el-checkbox-group v-model="formData.signInIds">
           <el-checkbox
-            v-for="item in personList"
-            :key="item.personId"
-            :label="item.personId">
-            {{item.personName}}
+            v-for="item in userList"
+            :key="item.id"
+            :label="item.id">
+            {{item.userName}}
           </el-checkbox>
         </el-checkbox-group>
       </el-form-item>
@@ -75,29 +75,31 @@ export default {
       },
       rules: {},
       apiName: 'meeting/',
-      addApi: 'addMeeting',
-      updateApi: 'updateMeeting',
+      addApi: 'add',
+      updateApi: 'update',
       fileList: [],
-      personList: [],
+      userList: [],
       meetingTypeList: []
     }
   },
   mounted() {
-    this.getPersonList()
+    this.getUserList()
     this.getMeetingTypeList()
     this.id && this.getDetail()
   },
   methods: {
     async getMeetingTypeList() {
-      let {data} = await this.$http('meetingType/getMeetingTypeList')
+      let {data} = await this.$http({url:'meetingType/getList',params:{
+        companyId:sessionStorage.getItem('companyId')
+      }})
       if (data.code == 0) {
         this.meetingTypeList = data.data
       }
     },
-    async getPersonList() {
-      let {data} = await this.$http('person/getPersonListAll')
+    async getUserList() {
+      let {data} = await this.$http({url:'user/getList',params:{companyId:sessionStorage.getItem('companyId')}})
       if (data.code == 0) {
-        this.personList = data.data
+        this.userList = data.data
       }
     },
     handleRemove(file, list) {
@@ -113,10 +115,7 @@ export default {
     },
     async getDetail() {
       let {data} = await this.$http({
-        url: 'meeting/getMeeting',
-        params: {
-          meetingId: this.id
-        }
+        url: 'meeting/get/' + this.id
       })
       if (data.code == 0) {
         this.formData = data.data

@@ -57,8 +57,8 @@ export default {
       idField: 'id',
       editRoute: 'AccidentEdit',
       apiName: 'accident',
-      deleteApi: '/deleteAccident',
-      getListApi: '/getAccidentList'
+      deleteApi: '/delete',
+      getListApi: '/getList'
     }
   },
   mounted() {

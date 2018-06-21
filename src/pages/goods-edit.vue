@@ -39,7 +39,8 @@ export default {
     return {
       id: parseInt(this.$route.query.id),
       formData: {
-        bizScopeId: 0,
+        companyId:sessionStorage.getItem('companyId'),
+        bizScopeId: '',
         goodsName: '',
         goodsPackage: '',
         safeCardPath: '',
@@ -47,8 +48,8 @@ export default {
       },
       rules: {},
       apiName: 'goods/',
-      addApi: 'addGoods',
-      updateApi: 'updateGoods',
+      addApi: 'add',
+      updateApi: 'update',
       goodsTypeList: []
     }
   },
@@ -58,17 +59,14 @@ export default {
   },
   methods: {
     async getGoodsTypeList() {
-      let {data} = await this.$http('bizScope/getBizScopeList')
+      let {data} = await this.$http({url:'bizScope/getList',params:{companyId:sessionStorage.getItem('companyId')}})
       if (data.code == 0) {
         this.goodsTypeList = data.data
       }
     },
     async getDetail() {
       let {data} = await this.$http({
-        url: 'goods/getGoods',
-        params: {
-          goodsId: this.id
-        }
+        url: 'goods/get/' + this.id
       })
       if (data.code == 0) {
         this.formData = data.data

@@ -3,12 +3,13 @@
     <el-form :model="formData" :rules="rules" ref="ruleForm" label-width="180px">
       <div class="form-title">基本信息</div>
       <div class="form-block">
-        <el-form-item label="人员名称" prop="personName">
-          <el-input v-model="formData.personName"></el-input>
+        <el-input v-model="formData.companyId" v-show="false"></el-input>
+        <el-form-item label="人员名称" prop="userName">
+          <el-input v-model="formData.userName"></el-input>
         </el-form-item>
-        <el-form-item label="人员类型" prop="personTypeId">
-          <el-select v-model="formData.personTypeId" placeholder="请选择">
-            <el-option v-for="item in personTypeList" :key="item.id" :label="item.typeName" :value="item.id"></el-option>
+        <el-form-item label="人员类型" prop="roleId">
+          <el-select v-model="formData.roleId" placeholder="请选择">
+            <el-option v-for="item in roleList" :key="item.id" :label="item.roleName" :value="item.id"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="联系号码" prop="mobile">
@@ -16,9 +17,12 @@
         </el-form-item>
         <el-form-item label="人员状态" prop="status">
           <el-select v-model="formData.status" placeholder="请选择">
+            <el-option v-for="item in userStatusList" :key="item.id" :label="item.userStatusName" :value="item.id"></el-option>
+          </el-select>
+          <!-- <el-select v-model="formData.status" placeholder="请选择">
             <el-option label="在职" :value="0"></el-option>
             <el-option label="离职" :value="1"></el-option>
-          </el-select>
+          </el-select> -->
         </el-form-item>
       </div>
       <div class="form-title">身份证信息</div>
@@ -81,12 +85,13 @@
         <el-form-item label="从业资格证初次领证日期" prop="qualificationFirstDate">
           <el-date-picker v-model="formData.qualificationFirstDate" type="date" value-format="yyyy-MM-dd HH:mm"></el-date-picker>
         </el-form-item>
-        <el-form-item label="从业资格证有效期截止日期" prop="qualificationValidityEndDate">
-          <el-date-picker v-model="formData.qualificationValidityEndDate" type="date" value-format="yyyy-MM-dd HH:mm"></el-date-picker>
-        </el-form-item>
         <el-form-item label="从业资格证有效期开始日期" prop="qualificationValidityStartDate">
           <el-date-picker v-model="formData.qualificationValidityStartDate" type="date" value-format="yyyy-MM-dd HH:mm"></el-date-picker>
         </el-form-item>
+        <el-form-item label="从业资格证有效期截止日期" prop="qualificationValidityEndDate">
+          <el-date-picker v-model="formData.qualificationValidityEndDate" type="date" value-format="yyyy-MM-dd HH:mm"></el-date-picker>
+        </el-form-item>
+        
         <el-form-item label="从业资格证图片" prop="qualificationLicensePath">
           <img-upload
             :path.sync="formData.qualificationLicensePath">
@@ -111,12 +116,13 @@
         <el-form-item label="准驾车型" prop="driverType">
           <el-input v-model="formData.driverType"></el-input>
         </el-form-item>
-        <el-form-item label="驾驶证有效期结束日期" prop="driverValidityEndDate">
-          <el-date-picker v-model="formData.driverValidityEndDate" type="date" value-format="yyyy-MM-dd HH:mm"></el-date-picker>
-        </el-form-item>
         <el-form-item label="驾驶证有效期开始日期" prop="driverValidityStartDate">
           <el-date-picker v-model="formData.driverValidityStartDate" type="date" value-format="yyyy-MM-dd HH:mm"></el-date-picker>
         </el-form-item>
+        <el-form-item label="驾驶证有效期结束日期" prop="driverValidityEndDate">
+          <el-date-picker v-model="formData.driverValidityEndDate" type="date" value-format="yyyy-MM-dd HH:mm"></el-date-picker>
+        </el-form-item>
+        
       </div>
       <el-dialog :visible.sync="dialogVisible" append-to-body>
         <img width="100%" :src="dialogImageUrl" alt="">
@@ -137,8 +143,8 @@ export default {
     return {
       id: parseInt(this.$route.query.id),
       formData: {
-        personName: '',
-        personTypeId: '',
+        userName: '',
+        roleId: '',
         gender: '',
         age: '',
         birthday: '',
@@ -154,66 +160,87 @@ export default {
         qualificationLicensePath: '',
         driverLicensePath: '',
         driverIssuingAuthority: '',
-        driverType: ''
+        driverType: '',
+        companyId:sessionStorage.getItem('companyId')
       },
       rules: {},
-      apiName: 'person/',
-      addApi: 'addPerson',
-      updateApi: 'updatePerson',
-      personTypeList: [],
+      apiName: 'user/',
+      addApi: 'add',
+      updateApi: 'update',
+      roleList: [],
+      userStatusList:[],
       qualificationCertificateTypeList: []
     }
   },
   mounted() {
-    this.getPersonTypeList()
+    this.getRoleList()
+    this.getStatusList()
     this.getQualificationCertificateTypeList()
     this.id && this.getDetail()
   },
   methods: {
     async getQualificationCertificateTypeList() {
-      let {data} = await this.$http('qualificationCertificateType/getQualificationCertificateTypeList')
+      let {data} = await this.$http({
+        url:'qualificationCertificateType/getList',
+        params:{
+          companyId:sessionStorage.getItem('companyId')
+        }
+      })
       if (data.code == 0) {
-        this.qualificationCertificateTypeList = data.data.list
+        this.qualificationCertificateTypeList = data.data
       }
     },
-    async getPersonTypeList() {
-      let {data} = await this.$http('personType/getPersonTypeList')
+    async getStatusList() {
+      let {data} = await this.$http({
+        url:'userStatus/getList',
+        params:{
+          companyId:sessionStorage.getItem('companyId')
+        }
+      })
       if (data.code == 0) {
-        this.personTypeList = data.data.list
+        this.userStatusList = data.data
+      }
+    },
+    async getRoleList() {
+      let {data} = await this.$http({
+        url:'role/getList',
+        params:{
+          companyId:sessionStorage.getItem('companyId')
+        }
+      })
+      if (data.code == 0) {
+        this.roleList = data.data
       }
     },
     handleUpload1(res) {
-      if (res.person) {
-        this.formData.address = res.person.address
-        this.formData.birthday = res.person.birthday
-        this.formData.gender = res.person.gender
-        this.formData.idCardNum = res.person.idCardNum
-        this.formData.nation = res.person.nation
-        this.formData.personName = res.person.personName
+      if (res.user) {
+        this.formData.address = res.user.address
+        this.formData.birthday = res.user.birthday
+        this.formData.gender = res.user.gender
+        this.formData.idCardNum = res.user.idCardNum
+        this.formData.nation = res.user.nation
+        this.formData.userName = res.user.userName
       }
     },
     handleUpload2(res) {
-      if (res.person) {
-        this.formData.idCardValidityEndDate = res.person.idCardValidityEndDate
-        this.formData.idCardValidityStartDate = res.person.idCardValidityStartDate
-        this.formData.issuingAuthority = res.person.issuingAuthority
+      if (res.user) {
+        this.formData.idCardValidityEndDate = res.user.idCardValidityEndDate
+        this.formData.idCardValidityStartDate = res.user.idCardValidityStartDate
+        this.formData.issuingAuthority = res.user.issuingAuthority
       }
     },
     handleUpload3(res) {
-      if (res.person) {
-        this.formData.driverFirstDate = res.person.driverFirstDate
-        this.formData.driverIssuingAuthority = res.person.driverIssuingAuthority
-        this.formData.driverType = res.person.driverType
-        this.formData.driverValidityEndDate = res.person.driverValidityEndDate
-        this.formData.driverValidityStartDate = res.person.driverValidityStartDate
+      if (res.user) {
+        this.formData.driverFirstDate = res.user.driverFirstDate
+        this.formData.driverIssuingAuthority = res.user.driverIssuingAuthority
+        this.formData.driverType = res.user.driverType
+        this.formData.driverValidityEndDate = res.user.driverValidityEndDate
+        this.formData.driverValidityStartDate = res.user.driverValidityStartDate
       }
     },
     async getDetail() {
       let {data} = await this.$http({
-        url: 'person/getPerson',
-        params: {
-          personId: this.id
-        }
+        url: 'user/get/' + this.id
       })
       if (data.code == 0) {
         this.formData = data.data

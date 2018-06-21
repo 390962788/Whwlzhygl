@@ -28,8 +28,8 @@
         label="操作"
         width="100">
         <template slot-scope="scope">
-          <el-button @click="editClick(scope.row.meetingId)" type="text" size="small">编辑</el-button>
-          <el-button @click="delectClick([scope.row.meetingId])" type="text" size="small">删除</el-button>
+          <el-button @click="editClick(scope.row.id)" type="text" size="small">编辑</el-button>
+          <el-button @click="delectClick([scope.row.id])" type="text" size="small">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -56,8 +56,8 @@ export default {
       idField: 'meetingId',
       editRoute: 'MeetingEdit',
       apiName: 'meeting',
-      deleteApi: '/deleteMeeting',
-      getListApi: '/getMeetingList'
+      deleteApi: '/delete',
+      getListApi: '/getList'
     }
   },
   mounted() {

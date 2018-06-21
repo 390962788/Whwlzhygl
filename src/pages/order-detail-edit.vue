@@ -3,12 +3,12 @@
     <el-form :model="formData" :rules="rules" ref="ruleForm" label-width="120px" size="medium">
       <el-form-item label="驾驶员" prop="driverId">
         <el-select v-model="formData.driverId" filterable placeholder="请选择">
-          <el-option v-for="item in personList" :key="item.personId" :label="item.personName" :value="item.personId"></el-option>
+          <el-option v-for="item in userList" :key="item.userId" :label="item.userName" :value="item.userId"></el-option>
         </el-select>
       </el-form-item>
       <el-form-item label="押运员" prop="escortId">
         <el-select v-model="formData.escortId" filterable placeholder="请选择">
-          <el-option v-for="item in personList" :key="item.personId" :label="item.personName" :value="item.personId"></el-option>
+          <el-option v-for="item in userList" :key="item.userId" :label="item.userName" :value="item.userId"></el-option>
         </el-select>
       </el-form-item>
       <el-form-item label="头车车牌号" prop="carId">
@@ -45,11 +45,11 @@ export default {
         escortId: '',
         orderId: this.sid
       },
-      personList: [],
+      userList: [],
       rules: {},
       apiName: 'orderDetail/',
-      addApi: 'addOrderDetail',
-      updateApi: 'updateOrderDetail',
+      addApi: 'add',
+      updateApi: 'update',
       carTeamList: [],
       carList: [],
       carList2: [],
@@ -66,7 +66,7 @@ export default {
     }
   },
   mounted() {
-    this.getPersonList()
+    this.getuserList()
     this.getCarTeamList()
     this.getCarList()
     this.getCarList2()
@@ -75,7 +75,7 @@ export default {
   methods: {
     async getCarList(tid) {
       let {data} = await this.$http({
-        url: 'car/getCarListAll',
+        url: 'car/getList',
         params: {
           carTeamId: this.carTeamId
         }
@@ -86,7 +86,7 @@ export default {
     },
     async getCarList2() {
       let {data} = await this.$http({
-        url: 'car/getCarListAll',
+        url: 'car/getList',
         params: {
           carTeamId: this.carTeamId2
         }
@@ -97,7 +97,7 @@ export default {
     },
     async getCarTeamList() {
       let {data} = await this.$http({
-        url: '/carTeam/getCarTeamListAll',
+        url: '/carTeam/getList',
         params: {
           companyId: sessionStorage.getItem('companyId')
         }
@@ -106,20 +106,20 @@ export default {
         this.carTeamList = data.data
       }
     },
-    async getPersonList() {
+    async getuserList() {
       let {data} = await this.$http({
-        url: 'person/getPersonListAll'
+        url: 'user/getList',
+        params:{
+          companyId:sessionStorage.getItem('companyId')
+        }
       })
       if (data.code == 0) {
-        this.personList = data.data
+        this.userList = data.data
       }
     },
     async getDetail() {
       let {data} = await this.$http({
-        url: 'orderDetail/getOrderDetail',
-        params: {
-          orderDetailId: this.id
-        }
+        url: 'orderDetail/get/' + this.id
       })
       if (data.code == 0) {
         this.formData = data.data

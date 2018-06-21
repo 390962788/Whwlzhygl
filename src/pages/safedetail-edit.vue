@@ -67,8 +67,8 @@ export default {
       rules: {},
       checkUnitList: [],
       apiName: 'safeCheckRecordDetail/',
-      addApi: 'addSafeCheckRecordDetail',
-      updateApi: 'updateSafeCheckRecordDetail'
+      addApi: 'add',
+      updateApi: 'update'
     }
   },
   props: {
@@ -86,10 +86,7 @@ export default {
   methods: {
     async getDetail() {
       let {data} = await this.$http({
-        url: 'safeCheckRecordDetail/getSafeCheckRecordDetail',
-        params: {
-          safeCheckRecordDetailId: this.id
-        }
+        url: 'safeCheckRecordDetail/get/' + this.id
       })
       if (data.code == 0) {
         this.formData = data.data
@@ -99,10 +96,13 @@ export default {
     },
     async getCheckUnitList() {
       let {data} = await this.$http({
-        url: 'checkUnit/getCheckUnitList'
+        url: 'checkUnit/getList',
+        params:{
+          companyId:sessionStorage.getItem('companyId')
+        }
       })
       if (data.code == 0) {
-        this.checkUnitList = data.data.list
+        this.checkUnitList = data.data
       }
     },
   }

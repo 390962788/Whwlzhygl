@@ -70,11 +70,11 @@
         <el-form-item label="承运人责任险保单号" prop="cliNum">
           <el-input v-model="formData.cliNum"></el-input>
         </el-form-item>
-        <el-form-item label="承运人责任险有效期截止日期" prop="cliValidityEndDate">
-          <el-date-picker v-model="formData.cliValidityEndDate" value-format="yyyy-MM-dd HH:mm"></el-date-picker>
-        </el-form-item>
         <el-form-item label="承运人责任险有效期开始日期" prop="cliValidityStartDate">
           <el-date-picker v-model="formData.cliValidityStartDate" value-format="yyyy-MM-dd HH:mm"></el-date-picker>
+        </el-form-item>
+        <el-form-item label="承运人责任险有效期截止日期" prop="cliValidityEndDate">
+          <el-date-picker v-model="formData.cliValidityEndDate" value-format="yyyy-MM-dd HH:mm"></el-date-picker>
         </el-form-item>
         <el-form-item label="承运人责任险图片" prop="cliPath">
           <img-upload
@@ -109,11 +109,11 @@
         <el-form-item label="营运证号" prop="roadTransportNum">
           <el-input v-model="formData.roadTransportNum"></el-input>
         </el-form-item>
+        <el-form-item label="营运证有效期开始日期" prop="roadTransportValidityStartDate">
+          <el-date-picker v-model="formData.roadTransportValidityStartDate" value-format="yyyy-MM-dd HH:mm"></el-date-picker>
+        </el-form-item>
         <el-form-item label="营运证有效期截止日期" prop="roadTransportValidityEndDate">
           <el-date-picker v-model="formData.roadTransportValidityEndDate" value-format="yyyy-MM-dd HH:mm"></el-date-picker>
-        </el-form-item>
-        <el-form-item label="营运证有效期开始时间" prop="roadTransportValidityStartDate">
-          <el-date-picker v-model="formData.roadTransportValidityStartDate" value-format="yyyy-MM-dd HH:mm"></el-date-picker>
         </el-form-item>
         <el-form-item label="营运证年审有效期" prop="motValidityEndDate">
           <el-date-picker v-model="formData.motValidityEndDate" value-format="yyyy-MM-dd HH:mm"></el-date-picker>
@@ -122,6 +122,18 @@
           <img-upload
             :path.sync="formData.motPath">
           </img-upload>
+        </el-form-item>
+
+        <el-form-item label="道路经营许可经营范围" prop="bizScopeIds">
+          <el-transfer
+            v-model="formData.bizScopeIds"
+            :right-default-checked="formData.bizScopeIds"
+            :data="bizScopeList"
+            :titles="['可选列表', '已选列表']"
+            :props="{
+              key: 'id',
+              label: 'scopeName'
+            }" />
         </el-form-item>
       </div>
       <div class="form-title">罐体信息</div>
@@ -140,11 +152,11 @@
         <el-form-item label="技术等级评定" prop="technicalGrade">
           <el-input v-model="formData.technicalGrade"></el-input>
         </el-form-item>
+         <el-form-item label="技术等级评定有效期开始日期" prop="technicalGradeValidityStartDate">
+          <el-date-picker v-model="formData.technicalGradeValidityStartDate" value-format="yyyy-MM-dd HH:mm"></el-date-picker>
+        </el-form-item>
         <el-form-item label="技术等级评定有效期截止日期" prop="technicalGradeValidityEndDate">
           <el-date-picker v-model="formData.technicalGradeValidityEndDate" value-format="yyyy-MM-dd HH:mm"></el-date-picker>
-        </el-form-item>
-        <el-form-item label="技术等级评定有效期开始日期" prop="technicalGradeValidityStartDate">
-          <el-date-picker v-model="formData.technicalGradeValidityStartDate" value-format="yyyy-MM-dd HH:mm"></el-date-picker>
         </el-form-item>
         <el-form-item label="技术等级证书图片" prop="technicalGradePath">
           <img-upload
@@ -156,17 +168,17 @@
       <div class="form-block">
         <el-form-item label="挂车" prop="trailerId">
           <el-select v-model="formData.trailerId" filterable>
-            <el-option v-for="item in carList" :key="item.carId" :label="item.carPlateNum" :value="item.carId"></el-option>
+            <el-option v-for="item in carList" :key="item.id" :label="item.carPlateNum" :value="item.id"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="驾驶员" prop="driverId">
           <el-select v-model="formData.driverId" filterable>
-            <el-option v-for="item in personList" :key="item.personId" :label="item.personName" :value="item.personId"></el-option>
+            <el-option v-for="item in userList" :key="item.id" :label="item.userName" :value="item.id"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="押运员" prop="escortId">
           <el-select v-model="formData.escortId" filterable>
-            <el-option v-for="item in personList2" :key="item.personId" :label="item.personName" :value="item.personId"></el-option>
+            <el-option v-for="item in userList2" :key="item.id" :label="item.userName" :value="item.id"></el-option>
           </el-select>
         </el-form-item>
       </div>
@@ -182,8 +194,8 @@
             :path.sync="formData.registerPath">
           </img-upload>
         </el-form-item>
-        <el-form-item label="营运状态" prop="status_id">
-          <el-select v-model="formData.status_id">
+        <el-form-item label="营运状态" prop="statusId">
+          <el-select v-model="formData.statusId">
             <el-option v-for="item in statusList" :key="item.id" :label="item.statusName" :value="item.id"></el-option>
           </el-select>
         </el-form-item>
@@ -207,6 +219,7 @@ export default {
     return {
       id: parseInt(this.$route.query.id),
       formData: {
+        companyId:sessionStorage.getItem('companyId'),
         carTeamId: this.sid,
         plateNum: '',
         address: '',
@@ -248,63 +261,75 @@ export default {
         tciValidityEndDate: '',
         ciNum: '',
         ciPath: '',
-        ciValidityEndDate: ''
+        ciValidityEndDate: '',
+         bizScopeIds: []
       },
       rules: {},
       apiName: 'car/',
-      addApi: 'addCar',
-      updateApi: 'updateCar',
+      addApi: 'add',
+      updateApi: 'update',
       carList: [],
-      personList: [],
-      personList2: [],
-      statusList: []
+      userList: [],
+      userList2: [],
+      statusList: [],
+      bizScopeList: [],
     }
   },
   mounted() {
     this.id && this.getDetail()
     this.getCarList()
-    this.getPersonList()
-    this.getPersonList2()
+    this.getuserList()
+    this.getuserList2()
     this.getstatusList()
+    this.getBizScopeList()
   },
   methods: {
     async getstatusList() {
-      let {data} = await this.$http('carStatus/getCarStatusList')
+      let {data} = await this.$http({url:'carStatus/getList',params:{companyId:sessionStorage.getItem('companyId')}})
       if (data.code == 0) {
         this.statusList = data.data
       }
     },
+    async getBizScopeList() {
+      let {data} = await this.$http({url:'bizScope/getList',params:{companyId:sessionStorage.getItem('companyId')}})
+      if (data.code == 0) {
+        this.bizScopeList = data.data
+      }
+    },
     async getCarList() {
       let {data} = await this.$http({
-        url: 'car/getCarListAll',
+        url: 'car/getList',
         params: {
-          carType: 1
+          carType: 1,
+          companyId:sessionStorage.getItem('companyId')
         }
       })
       if (data.code == 0) {
         this.carList = data.data
       }
     },
-    async getPersonList() {
+    async getuserList() {
       let {data} = await this.$http({
-        url: 'person/getPersonListAll',
+        url: 'user/getList',
         params: {
-          typeId: 1
+          roleId: 1,
+          companyId:sessionStorage.getItem('companyId')
         }
       })
       if (data.code == 0) {
-        this.personList = data.data
+        this.userList = data.data
       }
     },
-    async getPersonList2() {
+    async getuserList2() {
       let {data} = await this.$http({
-        url: 'person/getPersonListAll',
+        url: 'user/getList',
         params: {
-          typeId: 2
+          roleId: 2,
+          companyId:sessionStorage.getItem('companyId')
         }
       })
       if (data.code == 0) {
-        this.personList2 = data.data
+        this.userList2 = data.data
       }
     },
     handleUpload1(res) {
@@ -323,10 +348,7 @@ export default {
     },
     async getDetail() {
       let {data} = await this.$http({
-        url: 'car/getCar',
-        params: {
-          carId: this.id
-        }
+        url: 'car/get/' + this.id
       })
       if (data.code == 0) {
         this.formData = data.data

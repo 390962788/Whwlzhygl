@@ -15,8 +15,12 @@ if (location.host.indexOf('localhost') > -1) {
   baseURL = 'http://47.104.129.0:8080/'
 }
 axios.defaults.baseURL = baseURL
-axios.defaults.headers.common['Authorization'] = 'whwlzhygl ' + sessionStorage.getItem('loginkey')
-
+axios.defaults.headers.common['Authorization'] = 'whwlzhygl ' + sessionStorage.getItem('token')
+// Vue.http.interceptors.push((request, next) => {
+//   if (sessionStorage.getItem('token')) {
+//       request.headers.set('Authorization', 'whwlzhygl ' + sessionStorage.getItem('token'))
+//   }    
+// })
 Vue.prototype.$baseURL = baseURL
 Vue.prototype.$http = axios
 Vue.use(ElementUI)

@@ -7,7 +7,7 @@
     <el-table
       v-loading="loading"
       ref="multipleTable"
-      :data="tableData"
+      :data="tableData.list"
       tooltip-effect="dark"
       style="width: 100%"
       @selection-change="handleSelectionChange">
@@ -36,7 +36,7 @@
       :page-sizes="[10, 25, 50, 100]"
       :page-size="pageSize"
       layout="total, sizes, prev, pager, next, jumper"
-      :total="tableData.length">
+      :total="tableData.total">
     </el-pagination>
   </div>
 </template>
@@ -51,8 +51,8 @@ export default {
       idField: 'id',
       editRoute: 'GoodsTypeEdit',
       apiName: 'bizScope',
-      deleteApi: '/deleteBizScope',
-      getListApi: '/getBizScopeList'
+      deleteApi: '/delete',
+      getListApi: '/getList'
     }
   },
   mounted() {

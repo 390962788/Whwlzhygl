@@ -1,8 +1,8 @@
 <template>
   <div>
     <el-form-item :label="label" prop="driverId">
-      <el-select v-model="xpid" filterable placeholder="可输入姓名筛选" @change="personChange">
-        <el-option v-for="item in personList" :key="item.id" :label="item.personName" :value="item.id"></el-option>
+      <el-select v-model="xpid" filterable placeholder="可输入姓名筛选" @change="userChange">
+        <el-option v-for="item in userList" :key="item.id" :label="item.userName" :value="item.id"></el-option>
       </el-select>
     </el-form-item>
     <el-form-item label="身份证号" prop="driverIdCardNum">
@@ -20,7 +20,7 @@
 export default {
   data() {
     return {
-      personList: [],
+      userList: [],
       xpid: this.pid,
       xidCardNum: this.idCardNum,
       xmobile: this.mobile,
@@ -30,34 +30,31 @@ export default {
   props: 
     [
       'label',
-      'type',
+      'role',
       'pid',
       'idCardNum',
       'mobile',
       'quaLicNum'
     ],
   mounted() {
-    this.getPersonList()
-    this.xpid && this.personChange()
+    this.getUserList()
+    this.xpid && this.userChange()
   },
   methods: {
-    async getPersonList() {
+    async getUserList() {
       let {data} = await this.$http({
-        url: 'person/getPersonListAllContent',
+        url: 'user/getList',
         params: {
-          typeId: this.type
+          roleId: this.role
         }
       })
       if (data.code == 0) {
-        this.personList = data.data
+        this.userList = data.data
       }
     },
-    async personChange() {
+    async userChange() {
       let {data} = await this.$http({
-        url: 'person/getPerson',
-        params: {
-          personId: this.xpid
-        }
+        url: 'user/get/' + this.xpid
       })
       if (data.code == 0) {
         this.xidCardNum = data.data.idCardNum

@@ -13,7 +13,7 @@ export default {
       this.loading = true
       let params = {
         companyId: sessionStorage.getItem('companyId'),
-        userId: sessionStorage.getItem('userId'),
+        // userId: sessionStorage.getItem('userId'),
         currentPage: this.page,
         size: this.pageSize,
         keyword: this.keyword
@@ -62,9 +62,7 @@ export default {
       let {data} = await this.$http({
         method: 'post',
         url: this.apiName + this.deleteApi,
-        data: {
-          ids: val
-        }
+        data: val
       })
       if (data.code == 0) {
         this.$message({

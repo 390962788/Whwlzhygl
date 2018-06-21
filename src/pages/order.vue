@@ -27,8 +27,8 @@
         label="操作"
         width="100">
         <template slot-scope="scope">
-          <el-button @click="editClick(scope.row.orderId)" type="text" size="small">编辑</el-button>
-          <el-button @click="delectClick([scope.row.orderId])" type="text" size="small">删除</el-button>
+          <el-button @click="editClick(scope.row.id)" type="text" size="small">编辑</el-button>
+          <el-button @click="delectClick([scope.row.id])" type="text" size="small">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -52,11 +52,11 @@ export default {
   mixins: [listMixin, timeformat],
   data() {
     return {
-      idField: 'orderId',
+      idField: 'id',
       editRoute: 'OrderEdit',
       apiName: 'order',
-      deleteApi: '/deleteOrder',
-      getListApi: '/getOrderList'
+      deleteApi: '/delete',
+      getListApi: '/getList'
     }
   },
   mounted() {

@@ -2,11 +2,15 @@
   <div>
     <div class="form-title">门检检查项管理</div>
     <div class="form-block">
-      <tag-mgr apiName="car"></tag-mgr>
+      <tag-mgr apiName="carCheckContent"></tag-mgr>
     </div>
     <div class="form-title">隐患排查检查项管理</div>
     <div class="form-block">
-      <tag-mgr apiName="hiddenDanger"></tag-mgr>
+      <tag-mgr apiName="hiddenDangerCheckContent"></tag-mgr>
+    </div>
+    <div class="form-title">二级维护项管理</div>
+    <div class="form-block">
+      <tag-mgr apiName="maintenanceContent"></tag-mgr>
     </div>
   </div>
 </template>

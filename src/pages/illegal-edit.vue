@@ -8,9 +8,9 @@
         <el-select v-model="formData.carId" filterable placeholder="输入车牌号筛选">
           <el-option
             v-for="item in carList"
-            :key="item.carId"
+            :key="item.id"
             :label="item.carPlateNum"
-            :value="item.carId">
+            :value="item.id">
           </el-option>
         </el-select>
       </el-form-item>
@@ -67,8 +67,8 @@ export default {
       carList: [],
       rules: {},
       apiName: 'regulationRecord/',
-      addApi: 'addRegulationRecord',
-      updateApi: 'updateRegulationRecord'
+      addApi: 'add',
+      updateApi: 'update'
     }
   },
   mounted() {
@@ -78,7 +78,10 @@ export default {
   methods: {
     async getCarList() {
       let {data} = await this.$http({
-        url: '/car/getCarListAll'
+        url: '/car/getList',
+        params:{
+          companyId:sessionStorage.getItem('companyId')
+        }
       })
       if (data.code == 0) {
         this.carList = data.data
@@ -86,10 +89,7 @@ export default {
     },
     async getDetail() {
       let {data} = await this.$http({
-        url: 'regulationRecord/getRegulationRecord',
-        params: {
-          regulationRecordId: this.id
-        }
+        url: 'regulationRecord/get/' + this.id
       })
       if (data.code == 0) {
         this.formData = data.data

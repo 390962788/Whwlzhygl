@@ -60,9 +60,12 @@ export default {
       idField: 'id',
       editRoute: 'CarCheckEdit',
       apiName: 'carCheckRecordDetail',
-      deleteApi: '/deleteCarCheckRecordDetail',
-      getListApi: '/getCarCheckRecordDetailList',
-      params: {carCheckRecordId: this.id},
+      deleteApi: '/delete',
+      getListApi: '/getList',
+      params: {
+        id: this.id,
+        companyId:sessionStorage.getItem('companyId')
+      },
       isShowForm: false,
       sid: ''
     }

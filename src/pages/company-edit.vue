@@ -86,7 +86,7 @@
         <img width="100%" :src="dialogImageUrl" alt="">
       </el-dialog>
       <el-form-item>
-        <el-button type="primary" @click="submitForm('ruleForm')" :loading="posting">保存</el-button>
+        <el-button type="primary" @click="submitCompany('ruleForm')" :loading="posting">保存</el-button>
         <el-button @click="resetForm('ruleForm')">重置</el-button>
       </el-form-item>
     </el-form>
@@ -101,7 +101,7 @@ export default {
     return {
       bizScopeList: [],
       bizScope: [],
-      id: 1,
+      id: sessionStorage.getItem('companyId'),
       formData: {
         bizLicensePath: '',
         companyName: '',
@@ -122,8 +122,7 @@ export default {
       },
       rules: {},
       apiName: 'company/',
-      addApi: 'addCompany',
-      updateApi: 'updateCompany'
+      updateApi: 'update'
     }
   },
   mounted() {
@@ -132,7 +131,7 @@ export default {
   },
   methods: {
     async getBizScopeList() {
-      let {data} = await this.$http('bizScope/getBizScopeList')
+      let {data} = await this.$http({url:'bizScope/getList',params:{companyId:sessionStorage.getItem('companyId')}})
       if (data.code == 0) {
         this.bizScopeList = data.data
       }
@@ -146,17 +145,44 @@ export default {
     },
     async getDetail() {
       let {data} = await this.$http({
-        url: 'company/getCompany',
-        params: {
-          companyId: this.id
-        }
+        url: 'company/get'
       })
       if (data.code == 0) {
         this.formData = data.data
         this.formData.id = this.id
         this.formData.bizScopeIds = this.formData.bizScopeIds || []
       }
-    }
+    },
+    async submitCompany(formName) {
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          this.beforePost && this.beforePost()
+          this.postCompany()
+        } else {
+          this.$message.error('错了哦，这是一条错误消息')
+          return false;
+        }
+      });
+    },
+    async postCompany() {
+      this.posting = true
+      // this.formData.userId = sessionStorage.getItem('userId')
+      let {data} = await this.$http({
+        method: 'post',
+        url: this.apiName + (this.id ? this.updateApi : this.addApi),
+        data: this.formData
+      })
+      if (data.code == 0) {
+        this.$message({
+          message: '保存成功！',
+          type: 'success'
+        })
+        this.$emit('save-ok')
+      } else {
+        this.$message.error(data.msg)
+      }
+      this.posting = false
+    },
   }
 }
 </script>

@@ -68,8 +68,8 @@
         label="操作"
         width="100">
         <template slot-scope="scope">
-          <el-button @click="editClick(scope.row.carId)" type="text" size="small">编辑</el-button>
-          <el-button @click="delectClick([scope.row.carId])" type="text" size="small">删除</el-button>
+          <el-button @click="editClick(scope.row.id)" type="text" size="small">编辑</el-button>
+          <el-button @click="delectClick([scope.row.id])" type="text" size="small">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -96,11 +96,11 @@ export default {
   data() {
     return {
       keyword: '',
-      idField: 'carId',
+      idField: 'id',
       editRoute: 'CarEdit',
       apiName: 'car',
-      deleteApi: '/deleteCar',
-      getListApi: '/getCarList'
+      deleteApi: '/delete',
+      getListApi: '/getList'
     }
   },
   mounted() {

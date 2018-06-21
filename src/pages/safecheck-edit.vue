@@ -37,8 +37,8 @@ export default {
       picsList: [],
       rules: {},
       apiName: 'safeCheckRecord/',
-      addApi: 'addSafeCheckRecord',
-      updateApi: 'updateSafeCheckRecord'
+      addApi: 'add',
+      updateApi: 'update'
     }
   },
   mounted() {
@@ -47,10 +47,7 @@ export default {
   methods: {
     async getDetail() {
       let {data} = await this.$http({
-        url: 'safeCheckRecord/getSafeCheckRecord',
-        params: {
-          safeCheckRecordId: this.id
-        }
+        url: 'safeCheckRecord/get/' + this.id
       })
       if (data.code == 0) {
         this.formData = data.data

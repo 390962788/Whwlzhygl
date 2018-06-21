@@ -5,11 +5,11 @@
       <el-button size="small" icon="el-icon-delete" type="danger" @click="delectClick(multipleSelection)">删除</el-button>
       <el-button size="small" icon="el-icon-tickets" type="success" @click="$router.push({name: 'Role'})">人员角色管理</el-button>
       <el-input v-model="keyword" placeholder="姓名" size="small" clearable class="search-input" @keyup.13.native="getList"></el-input>
-      <el-select size="small" v-model="params.typeId" placeholder="选择类型搜索" @change="getList" clearable style="width: 150px">
+      <el-select size="small" v-model="params.roleId" placeholder="选择类型搜索" @change="getList" clearable style="width: 150px">
         <el-option
-          v-for="item in typeList"
+          v-for="item in roleList"
           :key="item.id"
-          :label="item.typeName"
+          :label="item.roleName"
           :value="item.id">
         </el-option>
       </el-select>
@@ -40,11 +40,11 @@
         type="selection">
       </el-table-column>
       <el-table-column
-        prop="personName"
+        prop="userName"
         label="名字">
       </el-table-column>
       <el-table-column
-        prop="typeName"
+        prop="roleName"
         label="角色">
       </el-table-column>
       <el-table-column
@@ -56,9 +56,9 @@
         label="操作"
         width="180">
         <template slot-scope="scope">
-          <el-button @click="authClick(scope.row.personId, scope.row.mobile)" type="text" size="small">授权</el-button>
-          <el-button @click="editClick(scope.row.personId)" type="text" size="small">编辑</el-button>
-          <el-button @click="delectClick([scope.row.personId])" type="text" size="small">删除</el-button>
+          <el-button @click="authClick(scope.row.id, scope.row.mobile)" type="text" size="small">授权</el-button>
+          <el-button @click="editClick(scope.row.id)" type="text" size="small">编辑</el-button>
+          <el-button @click="delectClick([scope.row.id])" type="text" size="small">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -73,7 +73,7 @@
       :total="tableData.total">
     </el-pagination>
     <el-dialog title="授权登录" :visible.sync="authShow" :key="authId">
-      <div class="form-item">
+      <!-- <div class="form-item">
         <span>角色：</span>
         <el-select v-model="authRole" placeholder="请选择角色" size="small" style="width: 200px">
           <el-option
@@ -82,7 +82,7 @@
           :label="item.roleName"
           :value="item.id"></el-option>
         </el-select>
-      </div>
+      </div> -->
       <div class="form-item">
         <span>帐号：</span>
         <el-input v-model="authTel" disabled style="width: 200px" size="small"></el-input>
@@ -116,24 +116,24 @@ export default {
   data() {
     return {
       keyword: '',
-      idField: 'personId',
+      idField: 'id',
       editRoute: 'PersonEdit',
-      apiName: 'person',
-      deleteApi: '/deletePerson',
-      getListApi: '/getPersonListByPersonName',
+      apiName: 'user',
+      deleteApi: '/delete',
+      getListApi: '/getList',
       params: {
-        typeId: ''
+        roleId: ''
       },
-      typeList: [],
+      roleList: [],
       authShow: false,
       authRole: '',
       authId: '',
       authTel: '',
       authPwd: '',
-      roleList: [],
+      // roleList: [],
       isExport: false,
       fieldList: [
-        {value:'personName', label: '人员名称'},
+        {value:'userName', label: '人员名称'},
         {value:'gender', label: '性别'},
         {value:'age', label: '年龄'},
         {value:'birthday', label: '出生日期'},
@@ -164,14 +164,18 @@ export default {
   },
   mounted() {
     this.getList()
-    this.getTypeList()
     this.getRoleList()
+    // this.getRoleList()
     this.getMenuList()
   },
   methods: {
     async getMenuList() {
       let {data} = await this.$http({
-        url: 'menus/getMenusAll'
+        url: 'menus/getMenusAll',
+        params:{
+          companyId: sessionStorage.getItem('companyId'),
+          // userId: sessionStorage.getItem('userId')
+        }
       })
       if (data.code == 0) {
         this.menuList = data.data[0] && data.data[0].children
@@ -180,9 +184,11 @@ export default {
     async getAll() {
       this.isExport = true
       let {data} = await this.$http({
-        url: 'person/getPersonListAllContent',
+        url: 'user/getList',
         params: {
-          typeId: this.params.typeId,
+          companyId: sessionStorage.getItem('companyId'),
+          // userId: sessionStorage.getItem('userId'),
+          roleId: this.params.roleId,
           keyword: this.keyword
         }
       })
@@ -208,8 +214,12 @@ export default {
       })
     },
     async authSubmit() {
-      if (this.authRole === '') {
-        this.$message.error('请选择角色')
+      // if (this.authRole === '') {
+      //   this.$message.error('请选择角色')
+      //   return false
+      // }
+      if (this.authTel === '') {
+        this.$message.error('请填写该用户的手机号码作为登录账号')
         return false
       }
       let {data} = await this.$http({
@@ -217,9 +227,9 @@ export default {
         url: 'auth/register',
         data: {
           password: this.authPwd,
-          roleId: this.authRole,
-          personId: this.authId,
-          userName: this.authTel,
+          // roleId: this.authRole,
+          id: this.authId,
+          // userName: this.authTel,
           menuIds: this.$refs.tree.getCheckedKeys()
         }
       })
@@ -238,16 +248,28 @@ export default {
       this.authId = id
       this.authShow = true
     },
+    // async getRoleList() {
+    //   let {data} = await this.$http({
+    //     url: 'role/getList',
+    //     params: {
+    //       companyId: sessionStorage.getItem('companyId'),
+    //       // userId: sessionStorage.getItem('userId')
+    //     }
+    //   })
+    //   if (data.code == 0) {
+    //     this.roleList = data.data
+    //   }
+    // },
     async getRoleList() {
-      let {data} = await this.$http('role/getRoleList')
+      let {data} = await this.$http({
+        url: 'role/getList',
+        params: {
+          companyId: sessionStorage.getItem('companyId'),
+          // userId: sessionStorage.getItem('userId')
+        }
+      })
       if (data.code == 0) {
         this.roleList = data.data
-      }
-    },
-    async getTypeList() {
-      let {data} = await this.$http('personType/getPersonTypeList')
-      if (data.code == 0) {
-        this.typeList = data.data.list
       }
     }
   }

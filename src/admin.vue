@@ -63,7 +63,7 @@ export default {
       let {data} = await this.$http({
         url: 'menus/getMenusAllByToken',
         params: {
-          token: sessionStorage.getItem('loginkey')
+          companyId:sessionStorage.getItem('companyId')
         }
       })
       if (data.code == 0) {

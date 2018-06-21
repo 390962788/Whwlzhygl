@@ -43,12 +43,12 @@ export default {
         companyId: sessionStorage.getItem('companyId'),
         noticeContent: '',
         noticeTitle: '',
-        noticeTypeId: 1
+        noticeTypeId: ''
       },
       rules: {},
       apiName: 'notice/',
-      addApi: 'addNotice',
-      updateApi: 'updateNotice',
+      addApi: 'add',
+      updateApi: 'update',
       typeList: [],
       fileList: []
     }
@@ -71,18 +71,18 @@ export default {
     },
     async getTypeList() {
       let {data} = await this.$http({
-        url: 'noticeType/getNoticeTypeList'
+        url: 'noticeType/getList',
+        params:{
+          companyId:sessionStorage.getItem('companyId')
+        }
       })
       if (data.code == 0) {
-        this.typeList = data.data.list
+        this.typeList = data.data
       }
     },
     async getDetail() {
       let {data} = await this.$http({
-        url: 'notice/getNotice',
-        params: {
-          noticeId: this.id
-        }
+        url: 'notice/get/' + this.id
       })
       if (data.code == 0) {
         this.formData = data.data

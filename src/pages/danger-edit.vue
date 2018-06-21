@@ -14,22 +14,25 @@
           :path.sync="item.photoPath">
         </img-upload>
       </el-form-item>
-      <el-form-item label="检查人" prop="personIds">
+      <el-form-item label="检查人" prop="userIds">
         <el-select
-          v-model="formData.personIds"
+          v-model="formData.userIds"
           multiple
           filterable
           placeholder="请选择人员">
           <el-option
-            v-for="item in personList"
-            :key="item.personId"
-            :label="item.personName"
-            :value="item.personId">
+            v-for="item in userList"
+            :key="item.id"
+            :label="item.userName"
+            :value="item.id">
           </el-option>
         </el-select>
       </el-form-item>
       <el-form-item label="存在的问题" prop="existQuestion">
         <el-input v-model="formData.existQuestion"></el-input>
+      </el-form-item>
+      <el-form-item label="检查日期" prop="checkDate">
+        <el-date-picker v-model="formData.checkDate" type="date" value-format="yyyy-MM-dd"></el-date-picker>
       </el-form-item>
       <el-form-item>
         <el-button type="warning" v-if="target" @click="reform">整改</el-button>
@@ -53,51 +56,52 @@ export default {
       id: parseInt(this.$route.query.id),
       dangeritemList: [],
       formData: {
-        companyId: sessionStorage.getItem('companyId'),
+        companyId: sessionStorage.getItem('companyId')
       },
-      personList: [],
+      userList: [],
       rules: {},
       imageUrl: '',
       apiName: 'hiddenDangerCheckRecord/',
-      addApi: 'addHiddenDangerCheckRecord',
-      updateApi: 'updateHiddenDangerCheckRecord'
+      addApi: 'add',
+      updateApi: 'update'
     }
   },
   mounted() {
     this.id ? this.getDetail() : this.getDangerItemList()
-    this.getPersonList()
+    this.getUserList()
   },
   methods: {
     beforePost() {
-      this.formData.contents = this.dangeritemList
+      this.formData.details = this.dangeritemList
     },
-    async getPersonList() {
-      let {data} = await this.$http('person/getPersonListAll')
+    async getUserList() {
+      let {data} = await this.$http({url:'user/getList',params:{companyId:sessionStorage.getItem('companyId')}})
       if (data.code == 0) {
-        this.personList = data.data
+        this.userList = data.data
       }
     },
     async getDangerItemList() {
       let {data} = await this.$http({
-        url: 'hiddenDangerCheckContent/getHiddenDangerCheckContentList'
+        url: 'hiddenDangerCheckDetail/getList',
+        params:{
+          companyId:sessionStorage.getItem('companyId')
+        }
       })
       if (data.code == 0) {
         this.dangeritemList = data.data
-        for (let i;i < this.dangeritemList.length; i++){
-          this.dangeritemList[i].result = null
-        }
+        // for (let i;i < this.dangeritemList.length; i++){
+        //   this.dangeritemList[i].result = null
+        // }
       }
     },
     async getDetail() {
       let {data} = await this.$http({
-        url: 'hiddenDangerCheckRecord/getHiddenDangerCheckRecord',
-        params: {
-          hiddenDangerCheckRecordId: this.id
-        }
+        url: 'hiddenDangerCheckRecord/get/' + this.id
       })
       if (data.code == 0) {
         this.formData = data.data
-        this.dangeritemList = this.formData.contents
+        this.formData.id = this.id
+        this.dangeritemList = this.formData.details
       }
     }
   }

@@ -23,8 +23,8 @@ export default {
       },
       rules: {},
       apiName: 'role/',
-      addApi: 'addRole',
-      updateApi: 'updateRole'
+      addApi: 'add',
+      updateApi: 'update'
     }
   },
   mounted() {
@@ -33,10 +33,7 @@ export default {
   methods: {
     async getDetail() {
       let {data} = await this.$http({
-        url: 'role/getRole',
-        params: {
-          roleId: this.id
-        }
+        url: 'role/get/' + this.id
       })
       if (data.code == 0) {
         this.formData = data.data

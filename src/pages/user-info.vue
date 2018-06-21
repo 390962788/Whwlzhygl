@@ -1,7 +1,7 @@
 <template>
   <div>
     <el-dropdown split-button @command="handleCommand">
-      帐号：{{userName}}
+      帐号：{{mobile}}
       <el-dropdown-menu slot="dropdown">
         <el-dropdown-item command="logout">退出登录</el-dropdown-item>
       </el-dropdown-menu>
@@ -15,7 +15,7 @@
 export default {
   data() {
     return {
-      userName: sessionStorage.getItem('userName'),
+      mobile: sessionStorage.getItem('mobile'),
     }
   },
   methods: {
@@ -25,9 +25,9 @@ export default {
       }
     },
     logout() {
-      sessionStorage.setItem('loginkey', '')
-      sessionStorage.setItem('companyId', '')
-      sessionStorage.setItem('userName', '')
+      sessionStorage.setItem('token','')
+      sessionStorage.removeItem('companyId','')
+      sessionStorage.removeItem('mobile','')
       this.$router.push({
         name: 'Login'
       })

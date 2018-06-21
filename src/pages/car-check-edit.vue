@@ -9,6 +9,9 @@
       <el-form-item label="检查结果" prop="result">
         <el-checkbox v-model="formData.result" true-label="合格" false-label="不合格"/>
       </el-form-item>
+      <el-form-item label="检查日期" prop="checkDate">
+        <el-date-picker v-model="formData.checkDate" type="date" value-format="yyyy-MM-dd"></el-date-picker>
+      </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="submitForm('ruleForm')" :loading="posting">保存</el-button>
         <el-button @click="resetForm('ruleForm')">重置</el-button>
@@ -23,6 +26,7 @@ export default {
   data() {
     return {
       formData: {
+        companyId:sessionStorage.getItem('companyId'),
         carCheckContentId: '',
         result: '',
         carCheckRecordId: this.sid
@@ -30,8 +34,8 @@ export default {
       contentList: [],
       rules: {},
       apiName: 'carCheckRecordDetail/',
-      addApi: 'addCarCheckRecordDetail',
-      updateApi: 'updateCarCheckRecordDetail'
+      addApi: 'add',
+      updateApi: 'update'
     }
   },
   props: {
@@ -49,18 +53,18 @@ export default {
   methods: {
     async getContentList() {
       let {data} = await this.$http({
-        url: 'carCheckContent/getCarCheckContentList'
+        url: 'carCheckContent/getList',
+        params:{
+          companyId:sessionStorage.getItem('companyId')
+        }
       })
       if (data.code == 0) {
-        this.contentList = data.data.list
+        this.contentList = data.data
       }
     },
     async getDetail() {
       let {data} = await this.$http({
-        url: 'carCheckRecordDetail/getCarCheckRecordDetail',
-        params: {
-          carCheckRecordDetailId: this.id
-        }
+        url: 'carCheckRecordDetail/get/' + this.id
       })
       if (data.code == 0) {
         this.formData = data.data

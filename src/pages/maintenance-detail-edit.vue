@@ -20,14 +20,15 @@ export default {
   data() {
     return {
       formData: {
+        companyId:sessionStorage.getItem('companyId'),
         maintenanceContentId: '',
         maintenancePlanId: this.sid
       },
       contentList: [],
       rules: {},
       apiName: 'maintenancePlanDetail/',
-      addApi: 'addMaintenancePlanDetail',
-      updateApi: 'updateMaintenancePlanDetail'
+      addApi: 'add',
+      updateApi: 'update'
     }
   },
   props: {
@@ -45,18 +46,18 @@ export default {
   methods: {
     async getContentList() {
       let {data} = await this.$http({
-        url: 'maintenanceContent/getMaintenanceContentList'
+        url: 'maintenanceContent/getList',
+        params:{
+          companyId:sessionStorage.getItem('companyId')
+        }
       })
       if (data.code == 0) {
-        this.contentList = data.data.list
+        this.contentList = data.data
       }
     },
     async getDetail() {
       let {data} = await this.$http({
-        url: 'maintenancePlanDetail/getMaintenancePlanDetail',
-        params: {
-          maintenancePlanDetailId: this.id
-        }
+        url: 'maintenancePlanDetail/get/' +this.id
       })
       if (data.code == 0) {
         this.formData = data.data

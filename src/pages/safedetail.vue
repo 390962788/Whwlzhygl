@@ -57,8 +57,8 @@ export default {
       idField: 'safeCheckRecordId',
       editRoute: 'CustomerEdit',
       apiName: 'safeCheckRecordDetail',
-      deleteApi: '/deleteSafeCheckRecordDetail',
-      getListApi: '/getSafeCheckRecordDetailList',
+      deleteApi: '/delete',
+      getListApi: '/getList',
       params: {safeCheckRecordId: this.id},
       isShowForm: false,
       sid: ''
