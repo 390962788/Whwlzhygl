@@ -37,14 +37,9 @@ export default {
         data: this.formData
       })
       if (data.code == 0) {
-        // sessionStorage.removeItem('token')
-        // sessionStorage.removeItem('companyId')
-        // sessionStorage.removeItem('mobile')
-        // sessionStorage.removeItem('personTypeId')
         this.$http.defaults.headers.common['Authorization'] = 'whwlzhygl ' + data.data.token
         sessionStorage.setItem('token', data.data.token)
-        // sessionStorage.setItem('userId', data.data.userId)
-        sessionStorage.setItem('personTypeId', data.data.personTypeId)
+        sessionStorage.setItem('roleId', data.data.roleId)
         sessionStorage.setItem('companyId', data.data.companyId)
         sessionStorage.setItem('mobile', this.formData.mobile)
         this.$router.push({

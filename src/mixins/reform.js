@@ -1,7 +1,7 @@
 export default {
   data() {
     return {
-      target: sessionStorage.getItem('personTypeId') == 5 ? 1 : (sessionStorage.getItem('personTypeId') == 4 && -1)
+      target: sessionStorage.getItem('roleId') == 5 ? 1 : (sessionStorage.getItem('roleId') == 4 && -1)
     }
   },
   methods: {
