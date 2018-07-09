@@ -38,6 +38,7 @@ export default {
       })
       if (data.code == 0) {
         this.$http.defaults.headers.common['Authorization'] = 'whwlzhygl ' + data.data.token
+        console.log(data.data.token);
         sessionStorage.setItem('token', data.data.token)
         sessionStorage.setItem('roleId', data.data.roleId)
         sessionStorage.setItem('companyId', data.data.companyId)

@@ -1,7 +1,7 @@
 <template>
   <div>
     <el-container>
-      <el-header>
+      <el-header @click="$router.push({name: 'Home'})">
         危化物流智慧云管理平台
         <div style="float: right">
           <user-info></user-info>

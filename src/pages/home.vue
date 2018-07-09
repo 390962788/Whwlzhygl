@@ -2,7 +2,7 @@
   <div class="home-wrap">
     <div class="sec">
       <div class="logo">
-        <el-button>此处为LOGO</el-button>
+        <el-button @click="$router.push({name: 'Home'})">此处为LOGO</el-button>
       </div>
       <div class="right">
         <user-info></user-info>
@@ -16,9 +16,10 @@
         </router-link>
       </div>
       <el-table
+        
         :show-header="false"
         :data="tableData0"
-        style="width: 100%">
+        style="width: 100%;height: 200px;overflow-y:auto">
         <el-table-column
           prop="noticeTitle">
         </el-table-column>
@@ -40,13 +41,13 @@
         <el-table
           :show-header="false"
           :data="tableData1"
-          style="width: 100%">
+          style="width: 100%;height: 200px;overflow-y:auto">
           <el-table-column
             prop="title">
           </el-table-column>
           <el-table-column
             width="280px"
-            prop="content">
+            prop="contents">
           </el-table-column>
           <el-table-column
             :formatter="timeformat"
@@ -62,9 +63,10 @@
           </router-link>
         </div>
         <el-table
+        
           :show-header="false"
           :data="tableData2"
-          style="width: 100%">
+          style="width: 100%;height: 200px;overflow-y:auto">
           <el-table-column
             prop="goodsName">
           </el-table-column>
@@ -82,9 +84,10 @@
         </router-link>
       </div>
       <el-table
+      
         :show-header="false"
         :data="tableData3"
-        style="width: 100%">
+        style="width: 100%;height: 200px;overflow-y:auto">
         <el-table-column
           prop="plateNum">
         </el-table-column>

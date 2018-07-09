@@ -189,7 +189,7 @@ export default {
           companyId: sessionStorage.getItem('companyId'),
           // userId: sessionStorage.getItem('userId'),
           roleId: this.params.roleId,
-          keyword: this.keyword
+          userName: this.keyword
         }
       })
       if (data.code == 0) {

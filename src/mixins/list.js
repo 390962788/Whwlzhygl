@@ -29,6 +29,9 @@ export default {
       this.loading = false
     },
     handleSizeChange(val) {
+      this.page = 1;
+      this.pageSize = val;
+      this.getList();
       console.log(`每页 ${val} 条`);
     },
     toggleSelection(rows) {

@@ -40,11 +40,19 @@ export default {
         // 如果存在自定义key值
         if (columns.key.length) {
             columns.key.map(function(m) {
-                row += '"' + (typeof columns.formatter === 'function' ? columns.formatter(m, n[m]) || n[m] : n[m]) + '",';
+                if(n[m]){
+                    row += '"' + (typeof columns.formatter === 'function' ? columns.formatter(m, n[m]) || n[m] : n[m])+"\t" + '",';
+                } else {
+                    row += '"",';
+                }
             });
         } else {
             for (key in n) {
-                row += '"' + (typeof columns.formatter === 'function' ? columns.formatter(key, n[key]) || n[key] : n[key]) + '",';
+                if(n[m]){
+                    row += '"' + (typeof columns.formatter === 'function' ? columns.formatter(key, n[key]) || n[key] : n[key])+"\t" + '",';
+                } else {
+                    row += '"",';
+                }
             }
         }
         row.slice(0, row.length - 1); // 删除最后一个,
@@ -68,7 +76,7 @@ export default {
     else if(bw['ie'] >= 10 || bw['edge'] == 'edge') {
       var _utf = "\uFEFF";
       var _csvData = new Blob([_utf + csvData], {
-          type: 'text/csv'
+          type: 'text/csv,charset=utf-8'
       });
       navigator.msSaveBlob(_csvData, fileName);
     }
@@ -84,7 +92,7 @@ export default {
     var _utf = "\uFEFF"; // 为了使Excel以utf-8的编码模式，同时也是解决中文乱码的问题
     if (window.Blob && window.URL && window.URL.createObjectURL) {
         var csvData = new Blob([_utf + csvData], {
-            type: 'text/csv'
+            type: 'text/csv,charset=utf-8'
         });
         return URL.createObjectURL(csvData);
     }

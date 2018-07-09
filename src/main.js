@@ -9,7 +9,7 @@ import ImgUpload from '@/components/img-upload'
 
 Vue.component('img-upload', ImgUpload)
 let baseURL
-if (location.host.indexOf('localhost') > -1) {
+if (location.host.indexOf('localhost') > -1 || location.host.indexOf('127.0.0.1') > -1) {
   baseURL = 'http://localhost:8080/'
 } else {
   baseURL = 'http://47.104.129.0:8080/'
